@@ -1,0 +1,32 @@
+/* 
+ * CSS required for rendering the HTML Templates of time tables
+ */
+body {
+  padding-top: 50px;
+}
+.center-pad {
+  padding: 40px 15px;
+  text-align: center;
+}
+.center-pad-notification {
+  padding: 0px 0px;
+  text-align: center;
+}
+.logo {
+	padding: 10px;
+}
+.logo-padding {
+	text-align: center;
+}
+.bold {
+	font-style: bold;
+}
+tr > th.timetable {
+	text-align: center;
+}
+tr > td.timetable {
+	text-align: center;
+}
+p.center {
+	text-align:center;
+}
