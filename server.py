@@ -1,6 +1,6 @@
 import os,binascii
 from flask import Flask, request, session, g, redirect, url_for, abort, \
-     render_template, flash
+     render_template, flash, jsonify
 from flaskext.mysql import MySQL
 from config import config, ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
 import datetime
@@ -33,6 +33,42 @@ def studentTimeTable():
 @app.route("/Faculty")
 def facultyTimeTable():
 	return render_template('FacultyTimeTable.html')
+
+@app.route("/Allot")
+def allot():
+	courses=["ToC","DWDM","OS","SE","EEA"]
+	days=["Mon","Tue","Wed","Thu","Fri"]
+	db=get_cursor()
+	sql="select * from timetable where classid=%s"%(101)
+	db.execute(sql)
+	table=db.fetchall()
+	block=[]
+	for item in table:
+		k=[str(item[1]),str(item[-2]),str(item[-1])]
+		block.append(k)
+	db.execute("COMMIT")
+	return render_template('allotment.html',courses=courses,days=days,block=block)
+
+@app.route("/test",methods=['POST'])
+def test():
+	mesg=""
+	day=""
+	db=get_cursor()
+	if request.method=="POST":
+		subj=str(request.form['course'])
+		day=str(request.form['day'])
+		time=str(request.form['time'])
+		mesg=subj
+		userid=1
+		sql="insert into timetable values(%s,'%s','%s','%s','%s')"%(101,subj,userid,day,time)
+		db.execute(sql)
+		db.execute("COMMIT")
+		sql="select name from courses where courseid=%s"%(subj)
+		db.execute(sql)
+		subject=db.fetchone()[0]
+		# print subject
+		db.execute("COMMIT")
+	return jsonify({'subj':mesg,'day':day,'subject':subject})
 
 if __name__ == "__main__":
 	app.debug = True

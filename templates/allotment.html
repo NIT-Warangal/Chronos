@@ -1,0 +1,63 @@
+{%extends "header.html"%}
+{%block content%}
+<div class="container">
+      	<p class="logo-padding">
+      	<img src="{{url_for('static',filename='nitwlogo.png')}}" alt="NIT-Warangal Logo" class="logo">
+      	<h2 style="text-align:center;">Department of Computer Science and Engineering.</h2>
+      	<h3 style="text-align:center;">Time Table</h3>
+      	<hr>
+      	<h4 style="text-align:center;">IInd B.Tech - B Section - I Semester, Room : C203 , Year : 2014 - 2015 </h4>
+<table class="table table-striped table-hover table-bordered">
+  <thead>
+    <tr class="info">
+        <th class="timetable"></th>
+        <th class="timetable">8-9</th>
+        <th class="timetable">9-10</th>
+        <th class="timetable">10-11</th>
+        <th class="timetable">11-12</th>
+        <th class="timetable">12-1</th>
+        <th class="timetable">2-3</th>
+        <th class="timetable">3-4</th>
+        <th class="timetable">4-5</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%set i=1%}
+    {%for l in days%}
+    <tr>
+        <strong><td class="info timetable"><strong>{{l}}</strong></td>
+
+        {%for j in range(1,9)%}
+        <td class="timetable"><select name="slot{{i}}{{j}}" id="slot{{i}}{{j}}">
+                
+                <option value="0">Select</option>{%for item in courses%}
+                <option value="{{loop.index}}">{{item}}</option>{%endfor%}
+
+            </select>
+            <span>
+                <button class="btn btn-sm btn-primary" id="button{{i}}{{j}}" onclick="submit_data(this.id);" data-time="{{j}}" data-day="{{i}}"><span class="glyphicon glyphicon-ok"></span></button>
+            </span>
+        </td>{%endfor%}
+    </tr>{%set i=i+1%}
+    {%endfor%}
+   </tbody>
+</table>
+<script type="text/javascript">
+function submit_data(id){
+    $.post("http://localhost:5000/test",
+  {
+    course:$('#slot'+$("#"+id).attr('data-day')+$("#"+id).attr('data-time')).val(),
+    day:$("#"+id).attr('data-day'),
+    time:$("#"+id).attr('data-time')
+  },
+  function(data,status){
+    alert("Data: " + data['subj']+ " \nData: "+ data['day'] + "\n Subject:" +data['subject']+ "\nStatus: " + status);
+    if(status=="success")
+    $('#'+id).addClass('btn-success');
+    $('#'+id).attr('disabled',true);
+    $('#slot'+$("#"+id).attr('data-day')+$("#"+id).attr('data-time')).attr('disabled',true);
+  });
+}
+
+</script>
+{%endblock%}
